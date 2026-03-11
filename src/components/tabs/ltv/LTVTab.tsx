@@ -20,7 +20,7 @@ import { SectionLabel } from '../../ui/SectionLabel';
 import { FormField, inputCls, inputStyle, onFocusAccent, onBlurDefault } from '../../ui/FormField';
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
-import { formatVND } from '../../../lib/calc';
+import { formatVND } from '../../../lib/finance';
 
 export interface LTVTabProps {
   inputs:   LTVInputs;

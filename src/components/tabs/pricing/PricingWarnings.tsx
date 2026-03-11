@@ -8,7 +8,7 @@
 import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
 import { WarningsCard } from '../../cards/WarningsCard';
 import type { WarningItem } from '../../cards/WarningsCard';
-import { formatVND } from '../../../lib/calc';
+import { formatVND } from '../../../lib/finance';
 
 export interface PricingWarningsProps {
   inputs:  PricingInputs;

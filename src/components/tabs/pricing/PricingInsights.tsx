@@ -8,7 +8,7 @@
 import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
 import { InsightsCard } from '../../cards/InsightsCard';
 import type { InsightItem } from '../../cards/InsightsCard';
-import { formatVND, formatPct } from '../../../lib/calc';
+import { formatVND, formatPct } from '../../../lib/finance';
 
 export interface PricingInsightsProps {
   inputs:  PricingInputs;

@@ -17,7 +17,7 @@ import type {
   UnitEconomicsInputs,
   UnitEconomicsOutputs,
 } from '../../types/business-calculator';
-import { applyPct, nonNegative, pctOf, safeDivide } from './utils';
+import { applyPct, nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CUSTOMER ACQUISITION COST

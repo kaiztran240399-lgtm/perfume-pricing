@@ -24,7 +24,8 @@ import {
   pctOf,
   roundSellingPrice,
   safeDivide,
-} from './utils';
+} from './shared';
+import { resolveCostDriver, isPercentageDriver } from '../costDrivers';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EFFECTIVE PURCHASE PRICE
@@ -68,15 +69,30 @@ export function resolveTemplateCostLine(
   customValue?: number,
 ): CostLineOutput {
   const rate = customValue !== undefined ? customValue : template.default_value;
-  const amount = template.is_percentage
-    ? applyPct(effectivePurchasePrice, rate)
-    : nonNegative(rate);
+
+  // If an explicit driverType is set, use the new resolver; otherwise fall back
+  // to the legacy is_percentage logic for backward compatibility.
+  let amount: number;
+  let isPercentage: boolean;
+
+  if (template.driverType) {
+    amount = resolveCostDriver(template.driverType, rate, {
+      purchasePrice: effectivePurchasePrice,
+      sellingPrice:  0,   // not yet computed at cost-line resolution stage
+      netRevenue:    0,
+      adSpend:       0,
+    });
+    isPercentage = isPercentageDriver(template.driverType);
+  } else {
+    amount      = template.is_percentage ? applyPct(effectivePurchasePrice, rate) : nonNegative(rate);
+    isPercentage = template.is_percentage;
+  }
 
   return {
     name:         template.name,
     amount,
-    isPercentage: template.is_percentage,
-    rate:         template.is_percentage ? rate : undefined,
+    isPercentage,
+    rate:         isPercentage ? rate : undefined,
     costType:     template.cost_type,
   };
 }

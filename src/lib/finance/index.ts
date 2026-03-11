@@ -1,14 +1,14 @@
 /**
- * src/lib/calc/index.ts
+ * lib/finance/index.ts
  *
  * Barrel export for the financial calculation engine.
- * Import from this path to avoid deep relative imports in pages/components.
+ * Import from this path for clean imports in hooks/components.
  *
  * Usage:
- *   import { calculatePricingOutputs, calculateUnitEconomicsOutputs } from '../lib/calc'
+ *   import { calculatePricingOutputs, formatVND } from '../lib/finance'
  */
 
-// ── Utilities ────────────────────────────────────────────────────────────────
+// ── Shared utilities ──────────────────────────────────────────────────────────
 export {
   applyPct,
   clamp,
@@ -25,7 +25,7 @@ export {
   safeDivide,
   toDecimal,
   toPct,
-} from './utils';
+} from './shared';
 
 // ── Tab 1 — Pricing ──────────────────────────────────────────────────────────
 export {

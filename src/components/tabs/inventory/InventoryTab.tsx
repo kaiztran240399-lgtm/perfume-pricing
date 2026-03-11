@@ -21,7 +21,7 @@ import { FormField, inputCls, inputStyle, onFocusAccent, onBlurDefault } from '.
 import { SectionLabel } from '../../ui/SectionLabel';
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
-import { formatVND, monthLabel } from '../../../lib/calc';
+import { formatVND, monthLabel } from '../../../lib/finance';
 
 export interface InventoryTabProps {
   inputs:        InventoryInputs;

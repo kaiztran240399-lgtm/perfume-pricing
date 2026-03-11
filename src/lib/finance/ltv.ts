@@ -19,7 +19,7 @@ import type {
   LTVOutputs,
 } from '../../types/business-calculator';
 import { HealthStatus } from '../../types/business-calculator';
-import { applyPct, nonNegative, safeDivide } from './utils';
+import { applyPct, nonNegative, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LTV TIERS

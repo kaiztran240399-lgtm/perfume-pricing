@@ -23,7 +23,7 @@ import type {
   InventoryOutputs,
   MonthlyProjection,
 } from '../../types/business-calculator';
-import { monthLabel, nonNegative, safeDivide } from './utils';
+import { monthLabel, nonNegative, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DEMAND & REORDER

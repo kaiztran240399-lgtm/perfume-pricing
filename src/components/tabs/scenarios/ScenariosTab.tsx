@@ -18,7 +18,7 @@ import { SectionLabel } from '../../ui/SectionLabel';
 import { inputStyle, onFocusAccent, onBlurDefault } from '../../ui/FormField';
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
-import { formatVND, formatPct } from '../../../lib/calc';
+import { formatVND, formatPct } from '../../../lib/finance';
 
 export interface ScenariosTabProps {
   inputs:   ScenarioInputs;

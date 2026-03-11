@@ -18,7 +18,7 @@ import { FormField, inputCls, inputStyle, onFocusAccent, onBlurDefault } from '.
 import { SectionLabel } from '../../ui/SectionLabel';
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
-import { formatVND, formatPct } from '../../../lib/calc';
+import { formatVND, formatPct } from '../../../lib/finance';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 

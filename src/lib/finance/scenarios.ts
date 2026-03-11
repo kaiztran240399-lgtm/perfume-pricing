@@ -28,7 +28,7 @@ import type {
   SensitivityEntry,
 } from '../../types/business-calculator';
 import { ScenarioType } from '../../types/business-calculator';
-import { nonNegative, pctOf, safeDivide } from './utils';
+import { nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LEVER RESOLUTION

@@ -20,7 +20,7 @@ import { MarketingTab }       from './tabs/marketing/MarketingTab';
 import { LTVTab }             from './tabs/ltv/LTVTab';
 import { InventoryTab }       from './tabs/inventory/InventoryTab';
 import { ScenariosTab }       from './tabs/scenarios/ScenariosTab';
-import { monthLabel }         from '../lib/calc';
+import { monthLabel }         from '../lib/finance';
 import type { MonthlySalesForecastEntry } from '../types/business-calculator';
 
 export default function BusinessCalculator() {

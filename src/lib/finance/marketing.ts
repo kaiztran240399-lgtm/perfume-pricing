@@ -21,7 +21,7 @@ import type {
   MarketingOutputs,
 } from '../../types/business-calculator';
 import { AdsMode } from '../../types/business-calculator';
-import { nonNegative, pctOf, safeDivide } from './utils';
+import { nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED CHANNEL HELPERS

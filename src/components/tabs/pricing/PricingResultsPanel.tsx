@@ -13,7 +13,7 @@ import { ResultsCard } from '../../cards/ResultsCard';
 import { MetricCard, MetricRow } from '../../ui/MetricCard';
 import { SectionLabel } from '../../ui/SectionLabel';
 import { TOKEN } from '../../ui/tokens';
-import { formatVND, formatPct } from '../../../lib/calc';
+import { formatVND, formatPct } from '../../../lib/finance';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 

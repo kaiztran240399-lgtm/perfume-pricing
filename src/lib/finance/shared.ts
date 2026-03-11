@@ -1,5 +1,7 @@
 /**
- * utils.ts — Shared math and formatting helpers.
+ * lib/finance/shared.ts
+ *
+ * Shared math and formatting helpers for all finance calculation modules.
  *
  * Rules:
  *  - Pure functions only. No side effects, no imports from UI layers.
