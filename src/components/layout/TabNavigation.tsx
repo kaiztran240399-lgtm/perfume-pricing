@@ -6,7 +6,7 @@
  * - Active tab shows a colored bottom border and accent background
  */
 
-import type { TabId } from '../../types/business-calculator';
+import type { TabId } from '../../types';
 import { TOKEN } from '../ui/tokens';
 
 // ── Tab definitions ───────────────────────────────────────────────────────────

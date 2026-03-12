@@ -14,13 +14,14 @@
  * Reverse calc: given a target revenue, back-compute required budget.
  */
 
+import type { CalcWarning } from '../../types/shared';
 import type {
   BudgetScenario,
   ChannelMetrics,
   MarketingInputs,
   MarketingOutputs,
-} from '../../types/business-calculator';
-import { AdsMode } from '../../types/business-calculator';
+} from '../../types/marketing';
+import { AdsMode } from '../../types/shared';
 import { nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -319,6 +320,31 @@ export function calculateRevenueTargetBudgetMap(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function computeMarketingWarnings(
+  out: Omit<MarketingOutputs, 'warnings'>,
+  aov: number,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.blended.totalOrders === 0) {
+    w.push({ level: 'info', code: 'NO_ORDERS', message: 'Chưa có đơn hàng — nhập ngân sách quảng cáo để xem ước tính hiệu quả.' });
+  }
+
+  if (out.blended.totalAdSpend > 0 && out.blended.blendedRoas < 2) {
+    w.push({ level: 'warning', code: 'LOW_BLENDED_ROAS', message: `ROAS pha trộn ${out.blended.blendedRoas.toFixed(1)}× — dưới ngưỡng hiệu quả 2×.` });
+  }
+
+  if (aov > 0 && out.blended.blendedCac > 0 && out.blended.blendedCac > aov * 0.3) {
+    w.push({ level: 'warning', code: 'HIGH_CAC', message: `CAC chiếm >${(out.blended.blendedCac / aov * 100).toFixed(0)}% AOV — chi phí thu hút khách cao.` });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -354,5 +380,6 @@ export function calculateMarketingOutputs(
     blended.totalAdSpend,
   );
 
-  return { facebook, tiktok, blended, budgetScenarios, revenueTargetBudgetMap };
+  const partial = { facebook, tiktok, blended, budgetScenarios, revenueTargetBudgetMap };
+  return { ...partial, warnings: computeMarketingWarnings(partial, aov) };
 }

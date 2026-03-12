@@ -26,8 +26,9 @@ import type {
   ScenarioMetrics,
   ScenarioOutputs,
   SensitivityEntry,
-} from '../../types/business-calculator';
-import { ScenarioType } from '../../types/business-calculator';
+} from '../../types/scenario';
+import type { CalcWarning } from '../../types/shared';
+import { ScenarioType } from '../../types/shared';
 import { nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -284,6 +285,42 @@ export function recommendScenario(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function computeScenarioWarnings(
+  out: Omit<ScenarioOutputs, 'warnings'>,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.base.operatingProfit < 0) {
+    w.push({
+      level: 'critical',
+      code: 'BASE_OPERATING_LOSS',
+      message: `Kịch bản gốc đang lỗ hoạt động ${Math.abs(out.base.operatingProfit).toLocaleString('vi-VN')} ₫/tháng.`,
+    });
+  }
+
+  if (out.base.netRevenue > 0 && out.base.grossMarginPct < 15) {
+    w.push({
+      level: 'warning',
+      code: 'LOW_GROSS_MARGIN',
+      message: `Biên lợi nhuận gộp kịch bản gốc: ${out.base.grossMarginPct.toFixed(1)}% — dưới ngưỡng 15%.`,
+    });
+  }
+
+  if (out.base.roas > 0 && out.base.roas < 2) {
+    w.push({
+      level: 'warning',
+      code: 'LOW_BASE_ROAS',
+      message: `ROAS kịch bản gốc: ${out.base.roas.toFixed(1)}× — dưới ngưỡng hiệu quả 2×.`,
+    });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -325,7 +362,7 @@ export function calculateScenarioOutputs(
   const { type: recommendedScenario, reason: recommendationReason } =
     recommendScenario(base, scenarioA, scenarioB);
 
-  return {
+  const partial = {
     base,
     scenarioA,
     scenarioB,
@@ -335,4 +372,5 @@ export function calculateScenarioOutputs(
     recommendedScenario,
     recommendationReason,
   };
+  return { ...partial, warnings: computeScenarioWarnings(partial) };
 }

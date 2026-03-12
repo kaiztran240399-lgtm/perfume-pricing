@@ -13,10 +13,11 @@
  * than grossMargin.
  */
 
+import type { CalcWarning } from '../../types/shared';
 import type {
   UnitEconomicsInputs,
   UnitEconomicsOutputs,
-} from '../../types/business-calculator';
+} from '../../types/unit-economics';
 import { applyPct, nonNegative, pctOf, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -182,6 +183,32 @@ export function calculateRoasPerUnit(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function computeUnitEconomicsWarnings(
+  out: Omit<UnitEconomicsOutputs, 'warnings'>,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.contributionMarginPerUnit < 0) {
+    w.push({ level: 'critical', code: 'NEGATIVE_CM', message: 'Contribution margin âm — mỗi đơn bán đang lỗ tiền mặt.', field: 'monthlyAdSpend' });
+  } else if (out.contributionMarginRatioPct < 15 && out.effectiveSellingPrice > 0) {
+    w.push({ level: 'warning', code: 'LOW_CM_RATIO', message: `CM ratio ${out.contributionMarginRatioPct.toFixed(1)}% thấp — dưới ngưỡng an toàn 15%.` });
+  }
+
+  if (out.cac > 0 && out.roasPerUnit < 1) {
+    w.push({ level: 'warning', code: 'LOW_ROAS', message: `ROAS ${out.roasPerUnit.toFixed(2)}× — chi phí ads đang vượt doanh thu ròng mỗi đơn.`, field: 'monthlyAdSpend' });
+  }
+
+  if (out.breakEvenUnitsPerMonth === Number.MAX_SAFE_INTEGER) {
+    w.push({ level: 'critical', code: 'NO_BREAK_EVEN', message: 'Không thể hoà vốn với chi phí cố định hiện tại — CM âm hoặc bằng 0.' });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -251,7 +278,7 @@ export function calculateUnitEconomicsOutputs(
   const monthlyNetRevenue        = netRevenuePerUnit * inputs.monthlyUnitsSold;
   const monthlyContributionProfit = contributionMarginPerUnit * inputs.monthlyUnitsSold;
 
-  return {
+  const partial = {
     effectiveSellingPrice,
     netRevenuePerUnit,
     allocatedGiftCostPerUnit,
@@ -266,4 +293,6 @@ export function calculateUnitEconomicsOutputs(
     monthlyNetRevenue,
     monthlyContributionProfit,
   };
+
+  return { ...partial, warnings: computeUnitEconomicsWarnings(partial) };
 }

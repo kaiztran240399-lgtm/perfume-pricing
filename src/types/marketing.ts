@@ -4,7 +4,7 @@
  * Input/output types for Tab 3 — Marketing Model.
  */
 
-import type { AdsMode } from './shared';
+import type { AdsMode, CalcWarning } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CHANNEL SUB-TYPES
@@ -108,4 +108,7 @@ export interface MarketingOutputs {
    * Stored as a lookup table (target ₫ → required budget ₫).
    */
   revenueTargetBudgetMap: Array<{ targetRevenue: number; requiredBudget: number }>;
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }

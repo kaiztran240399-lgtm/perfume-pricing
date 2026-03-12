@@ -10,7 +10,7 @@
 
 import { useState } from 'react';
 import type { CostTemplate } from '../../../types';
-import type { AdHocCostEntry } from '../../../types/business-calculator';
+import type { AdHocCostEntry } from '../../../types';
 import { SectionLabel } from '../../ui/SectionLabel';
 import { TOKEN } from '../../ui/tokens';
 import { inputCls, inputStyle, onFocusAccent, onBlurDefault } from '../../ui/FormField';

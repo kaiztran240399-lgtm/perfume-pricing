@@ -11,13 +11,14 @@
  * All functions are pure; no UI imports.
  */
 
+import type { CalcWarning } from '../../types/shared';
 import type { CostTemplate } from '../../types';
 import type {
   AdHocCostEntry,
   CostLineOutput,
   PricingInputs,
   PricingOutputs,
-} from '../../types/business-calculator';
+} from '../../types/pricing';
 import {
   applyPct,
   nonNegative,
@@ -200,6 +201,35 @@ function toDecimal(pct: number): number {
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Derive actionable warnings from a completed pricing calculation.
+ * Pure function — no side effects.
+ */
+export function computePricingWarnings(
+  out: Omit<PricingOutputs, 'warnings'>,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.costBase === 0) {
+    w.push({ level: 'info', code: 'NO_COST_BASE', message: 'Chưa nhập giá nhập hàng — nhập purchasePrice để tính giá bán tự động.' });
+  }
+  if (out.grossMarginPct < 0) {
+    w.push({ level: 'critical', code: 'NEGATIVE_MARGIN', message: 'Biên lợi nhuận âm — đang bán dưới giá vốn.', field: 'targetMarginPct' });
+  } else if (out.costBase > 0 && out.grossMarginPct < 15) {
+    w.push({ level: 'warning', code: 'LOW_MARGIN', message: `Biên lợi nhuận ${out.grossMarginPct.toFixed(1)}% thấp — khuyến nghị tối thiểu 15%.`, field: 'targetMarginPct' });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN ORCHESTRATOR
+// ─────────────────────────────────────────────────────────────────────────────
+
 /**
  * Full pricing calculation pipeline.
  *
@@ -239,7 +269,7 @@ export function calculatePricingOutputs(
   const grossProfitPerUnit = sellingPriceExact - costBase;
   const grossMarginPct     = pctOf(grossProfitPerUnit, sellingPriceExact);
 
-  return {
+  const partial = {
     effectivePurchasePrice,
     variableCostFixedAmount,
     variableCostPctAmount,
@@ -251,4 +281,6 @@ export function calculatePricingOutputs(
     grossMarginPct,
     costsBreakdown,
   };
+
+  return { ...partial, warnings: computePricingWarnings(partial) };
 }

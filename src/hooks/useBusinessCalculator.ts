@@ -1,51 +1,34 @@
 /**
  * hooks/useBusinessCalculator.ts
  *
- * Thin orchestrator for the 6-tab Business Calculator.
+ * Pure glue — composes 4 focused sub-hooks into the single public API.
  *
- * Responsibilities (delegated to sub-hooks):
- *   - State:       useState<BusinessCalculatorInputs>
- *   - Persistence: useEffect → saveToStorage  [useBusinessCalculatorPersistence]
- *   - Derived:     useMemo with auto-linking   [useBusinessCalculatorDerived]
- *   - Actions:     all useCallback updaters    [useBusinessCalculatorActions]
+ *   useBusinessCalculatorState       → raw inputs state (useState only)
+ *   useBusinessCalculatorPersistence → localStorage sync (side-effect only)
+ *   useBusinessCalculatorDerived     → all 6 tab outputs via useMemo
+ *   useBusinessCalculatorActions     → every write/update callback
  *
- * Public API is identical to the previous monolith — no consumer changes needed.
+ * No logic lives here. Changing behaviour means changing a sub-hook.
  */
 
-import { useState, useEffect } from 'react';
-import type { CostTemplate }          from '../types';
-import { DEFAULT_COST_TEMPLATES } from '../lib/defaults';
-import { loadFromStorage, saveToStorage }          from './useBusinessCalculatorPersistence';
-import { useBusinessCalculatorDerived }            from './useBusinessCalculatorDerived';
-import { useBusinessCalculatorActions }            from './useBusinessCalculatorActions';
+import { useEffect } from 'react';
+import { useBusinessCalculatorState }   from './useBusinessCalculatorState';
+import { saveToStorage }                from './useBusinessCalculatorPersistence';
+import { useBusinessCalculatorDerived } from './useBusinessCalculatorDerived';
+import { useBusinessCalculatorActions } from './useBusinessCalculatorActions';
 
 export function useBusinessCalculator() {
-  // ── State ──────────────────────────────────────────────────────────────────
-  const [inputs, setInputs] = useState(loadFromStorage);
-  const [costTemplates] = useState<CostTemplate[]>(DEFAULT_COST_TEMPLATES);
+  const { inputs, setInputs, costTemplates } = useBusinessCalculatorState();
 
-  // ── Persistence ────────────────────────────────────────────────────────────
-  useEffect(() => {
-    saveToStorage(inputs);
-  }, [inputs]);
+  // Side-effect: persist every state change to localStorage
+  useEffect(() => { saveToStorage(inputs); }, [inputs]);
 
-  // ── Derived outputs ────────────────────────────────────────────────────────
-  const derived = useBusinessCalculatorDerived(inputs, costTemplates);
-
-  // ── Actions ────────────────────────────────────────────────────────────────
+  const derived   = useBusinessCalculatorDerived(inputs, costTemplates);
   const activeTab = inputs.meta.activeTab;
   const actions   = useBusinessCalculatorActions(setInputs, activeTab);
 
-  return {
-    inputs,
-    derived,
-    costTemplates,
-    activeTab,
-    ...actions,
-  };
+  return { inputs, derived, costTemplates, activeTab, ...actions };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Re-export defaults so existing consumers don't need to change their imports.
-// ─────────────────────────────────────────────────────────────────────────────
+// Re-export so callers that imported defaults from here keep working.
 export { DEFAULT_INPUTS, DEFAULT_COST_TEMPLATES } from '../lib/defaults';

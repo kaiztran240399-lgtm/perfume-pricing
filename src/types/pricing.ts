@@ -4,7 +4,7 @@
  * Input/output types for Tab 1 — Pricing Calculator.
  */
 
-import type { Channel, CostType, ProductType } from './shared';
+import type { CalcWarning, Channel, CostType, ProductType } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED OUTPUT SUB-TYPE
@@ -92,4 +92,7 @@ export interface PricingOutputs {
 
   // ── Breakdown for waterfall display ──────────────────────────────────────
   costsBreakdown: CostLineOutput[];
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }

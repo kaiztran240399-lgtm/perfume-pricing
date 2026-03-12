@@ -5,8 +5,8 @@
  * Renders a sensitivity ranking to identify the highest-impact levers.
  */
 
-import type { ScenarioInputs, ScenarioOutputs, ScenarioLevers } from '../../../types/business-calculator';
-import { ScenarioType } from '../../../types/business-calculator';
+import type { ScenarioInputs, ScenarioOutputs, ScenarioLevers } from '../../../types';
+import { ScenarioType } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';

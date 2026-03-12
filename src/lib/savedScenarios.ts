@@ -8,7 +8,7 @@
  * Format: JSON array of SavedScenario
  */
 
-import type { BusinessCalculatorInputs } from '../types/business-calculator';
+import type { BusinessCalculatorInputs } from '../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES

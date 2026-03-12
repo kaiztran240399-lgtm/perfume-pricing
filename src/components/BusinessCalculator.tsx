@@ -21,7 +21,7 @@ import { LTVTab }             from './tabs/ltv/LTVTab';
 import { InventoryTab }       from './tabs/inventory/InventoryTab';
 import { ScenariosTab }       from './tabs/scenarios/ScenariosTab';
 import { monthLabel }         from '../lib/finance';
-import type { MonthlySalesForecastEntry } from '../types/business-calculator';
+import type { MonthlySalesForecastEntry } from '../types';
 
 export default function BusinessCalculator() {
   const {

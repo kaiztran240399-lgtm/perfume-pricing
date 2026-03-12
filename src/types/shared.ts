@@ -60,6 +60,26 @@ export const HealthStatus = {
 export type HealthStatus = typeof HealthStatus[keyof typeof HealthStatus];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// DOMAIN WARNING
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A structured warning produced by a domain calculation module.
+ * Every *Outputs type includes a `warnings` field populated by the
+ * corresponding computeXxxWarnings() pure function.
+ */
+export interface CalcWarning {
+  /** Severity tier. 'critical' requires attention; 'warning' advisory; 'info' neutral. */
+  level: 'critical' | 'warning' | 'info';
+  /** Machine-readable code for filtering / de-duplication in UI. */
+  code: string;
+  /** Vietnamese human-readable message shown to the user. */
+  message: string;
+  /** Optional: which input field triggered this warning (for highlighting). */
+  field?: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // COST TEMPLATE (shared across Pricing tab + defaults)
 // ─────────────────────────────────────────────────────────────────────────────
 

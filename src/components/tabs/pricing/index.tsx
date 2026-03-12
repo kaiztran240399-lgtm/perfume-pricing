@@ -6,7 +6,7 @@
  */
 
 import type { CostTemplate } from '../../../types';
-import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
+import type { PricingInputs, PricingOutputs } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { PricingInputsPanel } from './PricingInputsPanel';
 import { PricingResultsPanel } from './PricingResultsPanel';

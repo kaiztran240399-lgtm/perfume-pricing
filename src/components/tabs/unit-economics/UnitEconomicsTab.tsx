@@ -5,7 +5,7 @@
  * to reveal the true contribution margin per sold unit.
  */
 
-import type { UnitEconomicsInputs, UnitEconomicsOutputs } from '../../../types/business-calculator';
+import type { UnitEconomicsInputs, UnitEconomicsOutputs } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';

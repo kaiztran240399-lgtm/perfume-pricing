@@ -5,8 +5,8 @@
  * budget projection scenarios, and reverse revenue planning.
  */
 
-import type { MarketingInputs, MarketingOutputs } from '../../../types/business-calculator';
-import { AdsMode } from '../../../types/business-calculator';
+import type { MarketingInputs, MarketingOutputs } from '../../../types';
+import { AdsMode } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';

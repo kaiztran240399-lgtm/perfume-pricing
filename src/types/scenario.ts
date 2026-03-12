@@ -4,7 +4,7 @@
  * Input/output types for Tab 6 — Scenario Simulator.
  */
 
-import type { ScenarioType } from './shared';
+import type { CalcWarning, ScenarioType } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LEVERS & INPUTS
@@ -101,4 +101,7 @@ export interface ScenarioOutputs {
   /** Which scenario yields the highest operating profit within capital constraints. */
   recommendedScenario: ScenarioType;
   recommendationReason: string;
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }

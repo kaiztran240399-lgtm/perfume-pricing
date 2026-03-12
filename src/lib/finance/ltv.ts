@@ -13,12 +13,13 @@
  *   maxViableCAC = ltvReferralAdjusted / 3   (3:1 healthy threshold)
  */
 
+import type { CalcWarning } from '../../types/shared';
 import type {
   CohortYearValue,
   LTVInputs,
   LTVOutputs,
-} from '../../types/business-calculator';
-import { HealthStatus } from '../../types/business-calculator';
+} from '../../types/ltv';
+import { HealthStatus } from '../../types/shared';
 import { applyPct, nonNegative, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -197,6 +198,49 @@ export function calculateCohortValues(inputs: LTVInputs): CohortYearValue[] {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function computeLTVWarnings(
+  out: Omit<LTVOutputs, 'warnings'>,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.ltvNet < 0) {
+    w.push({
+      level: 'critical',
+      code: 'LTV_NET_NEGATIVE',
+      message: 'LTV ròng âm — chi phí giữ chân khách đang vượt biên lợi nhuận.',
+      field: 'retentionCostPerCustomerPerYear',
+    });
+  }
+
+  if (out.ltvCacRatio > 0 && out.ltvCacRatio < 1) {
+    w.push({
+      level: 'critical',
+      code: 'LTV_CAC_CRITICAL',
+      message: `LTV:CAC = ${out.ltvCacRatio.toFixed(2)} — đang lỗ trên mỗi khách hàng thu hút được.`,
+    });
+  } else if (out.ltvCacRatio >= 1 && out.ltvCacRatio < 3) {
+    w.push({
+      level: 'warning',
+      code: 'LTV_CAC_LOW',
+      message: `LTV:CAC = ${out.ltvCacRatio.toFixed(2)} — dưới ngưỡng bền vững 3:1.`,
+    });
+  }
+
+  if (out.paybackPeriodMonths !== Number.MAX_SAFE_INTEGER && out.paybackPeriodMonths > 12) {
+    w.push({
+      level: 'warning',
+      code: 'LONG_PAYBACK',
+      message: `Thời gian hoàn vốn CAC: ${out.paybackPeriodMonths} tháng — mất hơn 1 năm để thu hồi chi phí thu hút.`,
+    });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -243,7 +287,7 @@ export function calculateLTVOutputs(inputs: LTVInputs): LTVOutputs {
   // Step 4 — Chart data
   const cohortValueByYear = calculateCohortValues(inputs);
 
-  return {
+  const partial = {
     ltvSimple,
     ltvMarginAdjusted,
     ltvNet,
@@ -255,4 +299,5 @@ export function calculateLTVOutputs(inputs: LTVInputs): LTVOutputs {
     cacSurplusOrDeficit,
     cohortValueByYear,
   };
+  return { ...partial, warnings: computeLTVWarnings(partial) };
 }

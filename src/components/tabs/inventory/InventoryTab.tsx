@@ -8,7 +8,7 @@
  */
 
 import { useState } from 'react';
-import type { InventoryInputs, InventoryOutputs, MonthlySalesForecastEntry } from '../../../types/business-calculator';
+import type { InventoryInputs, InventoryOutputs, MonthlySalesForecastEntry } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';

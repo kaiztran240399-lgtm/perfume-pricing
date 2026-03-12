@@ -5,8 +5,8 @@
  * max viable CAC, and year-by-year cohort value.
  */
 
-import type { LTVInputs, LTVOutputs } from '../../../types/business-calculator';
-import { HealthStatus } from '../../../types/business-calculator';
+import type { LTVInputs, LTVOutputs } from '../../../types';
+import { HealthStatus } from '../../../types';
 import { TabLayout } from '../../layout/TabLayout';
 import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';

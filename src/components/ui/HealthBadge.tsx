@@ -5,7 +5,7 @@
  * Used for LTV:CAC, CM%, and cashflow critical months.
  */
 
-import { HealthStatus } from '../../types/business-calculator';
+import { HealthStatus } from '../../types';
 import { TOKEN } from './tokens';
 
 interface HealthConfig {

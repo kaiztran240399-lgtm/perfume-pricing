@@ -8,7 +8,7 @@
  *   4. Price comparison: exact vs rounded
  */
 
-import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
+import type { PricingInputs, PricingOutputs } from '../../../types';
 import { ResultsCard } from '../../cards/ResultsCard';
 import { MetricCard, MetricRow } from '../../ui/MetricCard';
 import { SectionLabel } from '../../ui/SectionLabel';

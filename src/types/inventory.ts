@@ -4,6 +4,8 @@
  * Input/output types for Tab 5 — Inventory & Cashflow.
  */
 
+import type { CalcWarning } from './shared';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED SUB-TYPES
 // ─────────────────────────────────────────────────────────────────────────────
@@ -108,4 +110,7 @@ export interface InventoryOutputs {
   cashflowProjection: MonthlyProjection[];
   /** monthIndex values where closingBalance turns negative. */
   criticalMonths: number[];
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }

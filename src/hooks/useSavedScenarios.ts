@@ -6,7 +6,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import type { BusinessCalculatorInputs } from '../types/business-calculator';
+import type { BusinessCalculatorInputs } from '../types';
 import {
   listSavedScenarios,
   saveScenario,

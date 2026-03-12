@@ -5,7 +5,7 @@
  * on every render. Displayed in an InsightsCard.
  */
 
-import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
+import type { PricingInputs, PricingOutputs } from '../../../types';
 import { InsightsCard } from '../../cards/InsightsCard';
 import type { InsightItem } from '../../cards/InsightsCard';
 import { formatVND, formatPct } from '../../../lib/finance';

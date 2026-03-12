@@ -22,7 +22,8 @@ import type {
   InventoryInputs,
   InventoryOutputs,
   MonthlyProjection,
-} from '../../types/business-calculator';
+} from '../../types/inventory';
+import type { CalcWarning } from '../../types/shared';
 import { monthLabel, nonNegative, safeDivide } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -314,6 +315,51 @@ export function buildCashflowProjection(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// WARNING CONDITIONS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function computeInventoryWarnings(
+  out: Omit<InventoryOutputs, 'warnings'>,
+): CalcWarning[] {
+  const w: CalcWarning[] = [];
+
+  if (out.criticalMonths.length > 0) {
+    const labels = out.criticalMonths.map((i) => `Tháng ${i + 1}`).join(', ');
+    w.push({
+      level: 'critical',
+      code: 'CASHFLOW_CRITICAL',
+      message: `Dòng tiền dưới mức dự trữ tối thiểu: ${labels}.`,
+    });
+  }
+
+  if (out.cashRunwayMonths < 2 && out.cashRunwayMonths >= 0) {
+    w.push({
+      level: 'critical',
+      code: 'LOW_CASH_RUNWAY',
+      message: `Tiền mặt chỉ đủ ${out.cashRunwayMonths} tháng chi phí cố định — nguy cơ cạn vốn.`,
+    });
+  }
+
+  if (out.daysOfSalesInventory > 60) {
+    w.push({
+      level: 'warning',
+      code: 'HIGH_DSI',
+      message: `Tồn kho ${Math.round(out.daysOfSalesInventory)} ngày bán — vốn bị giam trong hàng tồn quá lâu.`,
+    });
+  }
+
+  if (out.cashConversionCycleDays > 45) {
+    w.push({
+      level: 'warning',
+      code: 'SLOW_CASH_CYCLE',
+      message: `Chu kỳ chuyển đổi tiền mặt: ${Math.round(out.cashConversionCycleDays)} ngày — cân nhắc rút ngắn thời gian thu tiền hoặc thanh toán chậm hơn cho nhà cung cấp.`,
+    });
+  }
+
+  return w;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN ORCHESTRATOR
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -373,7 +419,7 @@ export function calculateInventoryOutputs(
     .filter((m) => m.isCritical)
     .map((m) => m.monthIndex);
 
-  return {
+  const partial = {
     reorderPoint,
     economicOrderQuantity:    eoq,
     currentInventoryValue,
@@ -385,4 +431,5 @@ export function calculateInventoryOutputs(
     cashflowProjection,
     criticalMonths,
   };
+  return { ...partial, warnings: computeInventoryWarnings(partial) };
 }

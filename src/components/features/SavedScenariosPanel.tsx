@@ -15,7 +15,7 @@
  */
 
 import { useState, useRef } from 'react';
-import type { BusinessCalculatorInputs } from '../../types/business-calculator';
+import type { BusinessCalculatorInputs } from '../../types';
 import { useSavedScenarios } from '../../hooks/useSavedScenarios';
 import type { SavedScenario } from '../../hooks/useSavedScenarios';
 import { TOKEN } from '../ui/tokens';

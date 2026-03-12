@@ -4,6 +4,8 @@
  * Input/output types for Tab 2 — Unit Economics.
  */
 
+import type { CalcWarning } from './shared';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // INPUTS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -62,4 +64,7 @@ export interface UnitEconomicsOutputs {
   monthlyGrossRevenue: number;            // ₫
   monthlyNetRevenue: number;              // ₫
   monthlyContributionProfit: number;      // ₫
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }

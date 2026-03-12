@@ -11,7 +11,7 @@
  */
 
 import type { CostTemplate } from '../../../types';
-import type { AdHocCostEntry, PricingInputs } from '../../../types/business-calculator';
+import type { AdHocCostEntry, PricingInputs } from '../../../types';
 import { InputsCard } from '../../cards/InputsCard';
 import { FormField, inputCls, inputStyle, onFocusAccent, onBlurDefault } from '../../ui/FormField';
 import { SectionLabel } from '../../ui/SectionLabel';

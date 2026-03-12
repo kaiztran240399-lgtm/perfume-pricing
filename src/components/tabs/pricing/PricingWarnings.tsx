@@ -5,7 +5,7 @@
  * lead to losses or invalid calculations.
  */
 
-import type { PricingInputs, PricingOutputs } from '../../../types/business-calculator';
+import type { PricingInputs, PricingOutputs } from '../../../types';
 import { WarningsCard } from '../../cards/WarningsCard';
 import type { WarningItem } from '../../cards/WarningsCard';
 import { formatVND } from '../../../lib/finance';

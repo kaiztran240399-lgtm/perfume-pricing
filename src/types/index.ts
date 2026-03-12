@@ -7,7 +7,7 @@
 
 // ── Shared primitives + enums ────────────────────────────────────────────────
 export type { ProductType, CostType, Channel, TabId } from './shared';
-export type { CostTemplate, SelectedCost }            from './shared';
+export type { CostTemplate, SelectedCost, CalcWarning } from './shared';
 export { AdsMode, ScenarioType, HealthStatus, CostDriverType } from './shared';
 
 // ── Pricing ──────────────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@
  * Input/output types for Tab 4 — Customer LTV.
  */
 
-import type { HealthStatus } from './shared';
+import type { CalcWarning, HealthStatus } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CHART DATA
@@ -81,4 +81,7 @@ export interface LTVOutputs {
 
   // ── Chart data ───────────────────────────────────────────────────────────
   cohortValueByYear: CohortYearValue[];
+
+  // ── Domain warnings ──────────────────────────────────────────────────────
+  warnings: CalcWarning[];
 }
