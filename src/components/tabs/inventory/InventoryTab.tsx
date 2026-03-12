@@ -22,6 +22,7 @@ import { SectionLabel } from '../../ui/SectionLabel';
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
 import { formatVND, monthLabel } from '../../../lib/finance';
+import { calcWarningsToWarningItems } from '../../../lib/calcWarningBridge';
 
 export interface InventoryTabProps {
   inputs:        InventoryInputs;
@@ -132,7 +133,7 @@ export function InventoryTab({ inputs, outputs, autoForecast = [], onChange }: I
   // ── Insights & warnings ──────────────────────────────────────────────────
 
   const insights: InsightItem[] = [];
-  const warnings: WarningItem[] = [];
+  const warnings: WarningItem[] = [...calcWarningsToWarningItems(outputs.warnings)];
 
   if (hasData) {
     const dsi = outputs.daysOfSalesInventory;

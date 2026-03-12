@@ -11,6 +11,7 @@
 // ── Shared utilities ──────────────────────────────────────────────────────────
 export {
   applyPct,
+  autoLink,
   clamp,
   clampPct,
   formatNumber,

@@ -20,6 +20,7 @@ import { FormField, inputCls, inputStyle, onFocusAccent, onBlurDefault } from '.
 import { TOKEN } from '../../ui/tokens';
 import PriceInput from '../../PriceInput';
 import { formatVND, formatPct } from '../../../lib/finance';
+import { calcWarningsToWarningItems } from '../../../lib/calcWarningBridge';
 
 export interface MarketingTabProps {
   inputs:   MarketingInputs;
@@ -52,7 +53,7 @@ export function MarketingTab({ inputs, outputs, onChange }: MarketingTabProps) {
 
   // ── Warnings ──────────────────────────────────────────────────────────────
 
-  const warnings: WarningItem[] = [];
+  const warnings: WarningItem[] = [...calcWarningsToWarningItems(outputs.warnings)];
 
   if (hasData && outputs.blended.blendedRoas < 1) {
     warnings.push({

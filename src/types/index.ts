@@ -38,6 +38,10 @@ export type {
   ScenarioMetrics, ScenarioDelta, SensitivityEntry,
 } from './scenario';
 
+// ── Validation ───────────────────────────────────────────────────────────────
+export { ValidationDomain } from './validation';
+export type { ValidationResult } from './validation';
+
 // ── Root aggregates ──────────────────────────────────────────────────────────
 export type { BusinessCalculatorInputs, BusinessCalculatorDerived } from './calculator';
 

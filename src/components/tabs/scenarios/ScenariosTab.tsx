@@ -12,6 +12,8 @@ import { InputsCard } from '../../cards/InputsCard';
 import { ResultsCard } from '../../cards/ResultsCard';
 import { InsightsCard } from '../../cards/InsightsCard';
 import type { InsightItem } from '../../cards/InsightsCard';
+import { WarningsCard } from '../../cards/WarningsCard';
+import { calcWarningsToWarningItems } from '../../../lib/calcWarningBridge';
 import { MetricRow } from '../../ui/MetricCard';
 import { DeltaBadge } from '../../ui/DeltaBadge';
 import { SectionLabel } from '../../ui/SectionLabel';
@@ -328,6 +330,7 @@ export function ScenariosTab({ inputs, outputs, onChange }: ScenariosTabProps) {
           )}
 
           <InsightsCard title="Nhận Xét Kịch Bản" icon="💡" items={insights} />
+          <WarningsCard items={calcWarningsToWarningItems(outputs.warnings)} title="Cảnh Báo Kịch Bản" />
         </>
       }
     />

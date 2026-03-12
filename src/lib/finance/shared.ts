@@ -182,3 +182,22 @@ export function nonNegative(value: number): number {
 export function clampPct(pct: number): number {
   return clamp(pct, 0, 100);
 }
+
+/**
+ * Auto-link helper — returns `linkedValue` only when `userValue` is 0,
+ * meaning the user has not explicitly set this field.
+ *
+ * Semantics: 0 is the "not yet set" sentinel for numeric inputs that cannot
+ * legitimately be zero (prices, margins, CAC, AOV, etc.).
+ * Once a user sets a non-zero value, that value is always preserved.
+ *
+ * Use this instead of `userValue || linkedValue` to make the auto-link
+ * contract explicit and avoid the JS `||` falsy-shortcut pitfall.
+ *
+ * Example:
+ *   autoLink(0, 1_500_000) → 1_500_000  (field blank → use linked price)
+ *   autoLink(800_000, 1_500_000) → 800_000  (user override preserved)
+ */
+export function autoLink(userValue: number, linkedValue: number): number {
+  return userValue !== 0 ? userValue : linkedValue;
+}

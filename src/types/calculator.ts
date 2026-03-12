@@ -12,6 +12,7 @@ import type { MarketingInputs, MarketingOutputs }         from './marketing';
 import type { LTVInputs, LTVOutputs }                     from './ltv';
 import type { InventoryInputs, InventoryOutputs }         from './inventory';
 import type { ScenarioInputs, ScenarioOutputs }           from './scenario';
+import type { ValidationResult }                          from './validation';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ROOT INPUT STATE
@@ -55,4 +56,6 @@ export interface BusinessCalculatorDerived {
   ltv:            LTVOutputs;
   inventory:      InventoryOutputs;
   scenario:       ScenarioOutputs;
+  /** Cross-domain financial health checks. Computed by runFinancialValidation(). */
+  validation:     ValidationResult[];
 }

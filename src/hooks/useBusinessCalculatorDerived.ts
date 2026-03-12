@@ -7,7 +7,8 @@
  *
  * Rules:
  *  - Pure useMemo — no state, no side effects.
- *  - Auto-linking uses `|| value` pattern: only substitutes when field is 0.
+ *  - Auto-linking uses autoLink(userValue, linkedValue): only substitutes when
+ *    userValue === 0 (i.e., field has not been explicitly set by the user).
  *  - Re-exported types stay in types/calculator.ts; this file is logic only.
  */
 
@@ -25,6 +26,7 @@ import type {
 } from '../types';
 import type { CostTemplate } from '../types';
 import {
+  autoLink,
   calculateInventoryOutputs,
   calculateLTVOutputs,
   calculateMarketingOutputs,
@@ -33,6 +35,7 @@ import {
   calculateUnitEconomicsOutputs,
   monthLabel,
 } from '../lib/finance';
+import { runFinancialValidation } from '../lib/finance/validation';
 
 export function useBusinessCalculatorDerived(
   inputs: BusinessCalculatorInputs,
@@ -45,9 +48,9 @@ export function useBusinessCalculatorDerived(
     // ── 2. Unit Economics — auto-link from Pricing when values are 0 ─────────
     const ueIn: UnitEconomicsInputs = {
       ...inputs.unitEconomics,
-      sellingPrice:   inputs.unitEconomics.sellingPrice   || pricing.sellingPriceRounded,
-      costBase:       inputs.unitEconomics.costBase        || pricing.costBase,
-      grossMarginPct: inputs.unitEconomics.grossMarginPct  || pricing.grossMarginPct,
+      sellingPrice:   autoLink(inputs.unitEconomics.sellingPrice,   pricing.sellingPriceRounded),
+      costBase:       autoLink(inputs.unitEconomics.costBase,        pricing.costBase),
+      grossMarginPct: autoLink(inputs.unitEconomics.grossMarginPct,  pricing.grossMarginPct),
     };
     const unitEconomics = calculateUnitEconomicsOutputs(ueIn);
 
@@ -55,16 +58,16 @@ export function useBusinessCalculatorDerived(
     const mktIn: MarketingInputs = {
       ...inputs.marketing,
       sharedAverageOrderValue:
-        inputs.marketing.sharedAverageOrderValue || pricing.sellingPriceRounded,
+        autoLink(inputs.marketing.sharedAverageOrderValue, pricing.sellingPriceRounded),
     };
     const marketing = calculateMarketingOutputs(mktIn);
 
     // ── 4. LTV — auto-link AOV, margin, CAC ──────────────────────────────────
     const ltvIn: LTVInputs = {
       ...inputs.ltv,
-      averageOrderValue: inputs.ltv.averageOrderValue || pricing.sellingPriceRounded,
-      grossMarginPct:    inputs.ltv.grossMarginPct     || pricing.grossMarginPct,
-      blendedCac:        inputs.ltv.blendedCac         || marketing.blended.blendedCac,
+      averageOrderValue: autoLink(inputs.ltv.averageOrderValue, pricing.sellingPriceRounded),
+      grossMarginPct:    autoLink(inputs.ltv.grossMarginPct,    pricing.grossMarginPct),
+      blendedCac:        autoLink(inputs.ltv.blendedCac,        marketing.blended.blendedCac),
     };
     const ltv = calculateLTVOutputs(ltvIn);
 
@@ -85,20 +88,20 @@ export function useBusinessCalculatorDerived(
     };
     const inventory = calculateInventoryOutputs(
       invIn,
-      pricing.effectivePurchasePrice || inputs.pricing.purchasePrice,
+      autoLink(pricing.effectivePurchasePrice, inputs.pricing.purchasePrice),
     );
 
     // ── 6. Scenarios — auto-populate base levers when 0 ──────────────────────
     const baseLevers: ScenarioLevers = {
-      sellingPrice:         inputs.scenario.base.sellingPrice     || pricing.sellingPriceRounded,
-      monthlyUnitsSold:     inputs.scenario.base.monthlyUnitsSold || ueIn.monthlyUnitsSold,
-      purchasePrice:        inputs.scenario.base.purchasePrice    || inputs.pricing.purchasePrice,
-      monthlyAdSpend:       inputs.scenario.base.monthlyAdSpend   || ueIn.monthlyAdSpend,
+      sellingPrice:         autoLink(inputs.scenario.base.sellingPrice,          pricing.sellingPriceRounded),
+      monthlyUnitsSold:     autoLink(inputs.scenario.base.monthlyUnitsSold,      ueIn.monthlyUnitsSold),
+      purchasePrice:        autoLink(inputs.scenario.base.purchasePrice,         inputs.pricing.purchasePrice),
+      monthlyAdSpend:       autoLink(inputs.scenario.base.monthlyAdSpend,        ueIn.monthlyAdSpend),
       adsConversionRatePct: inputs.scenario.base.adsConversionRatePct,
-      returnRatePct:        inputs.scenario.base.returnRatePct    || ueIn.returnRatePct,
-      discountRatePct:      inputs.scenario.base.discountRatePct  || ueIn.discountRatePct,
-      monthlyFixedCosts:    inputs.scenario.base.monthlyFixedCosts || ueIn.monthlyFixedCosts,
-      grossMarginTargetPct: inputs.scenario.base.grossMarginTargetPct || inputs.pricing.targetMarginPct,
+      returnRatePct:        autoLink(inputs.scenario.base.returnRatePct,         ueIn.returnRatePct),
+      discountRatePct:      autoLink(inputs.scenario.base.discountRatePct,       ueIn.discountRatePct),
+      monthlyFixedCosts:    autoLink(inputs.scenario.base.monthlyFixedCosts,     ueIn.monthlyFixedCosts),
+      grossMarginTargetPct: autoLink(inputs.scenario.base.grossMarginTargetPct,  inputs.pricing.targetMarginPct),
     };
     const scenarioIn: ScenarioInputs = {
       ...inputs.scenario,
@@ -111,6 +114,10 @@ export function useBusinessCalculatorDerived(
       ltv.ltvReferralAdjusted,
     );
 
-    return { pricing, unitEconomics, marketing, ltv, inventory, scenario };
+    // ── 7. Cross-domain validation ────────────────────────────────────────────
+    const partialDerived = { pricing, unitEconomics, marketing, ltv, inventory, scenario };
+    const validation = runFinancialValidation(partialDerived);
+
+    return { ...partialDerived, validation };
   }, [inputs, costTemplates]);
 }
